@@ -1,0 +1,12 @@
+# npm init -y
+# npm i express nodemon
+# npm i --save-dev typescript
+# npm install @types/express --save-dev
+# npm i @types/node --save-dev
+# npx tsc --init
+# npx tsc
+# node build/app.js
+
+
+
+
