@@ -18,8 +18,7 @@ const sequelize = new Sequelize({
   models: [__dirname + "/models"],
 });
 
-sequelize
-  .authenticate()
+sequelize.authenticate()
   .then(() => console.log("Database connected successfully"))
   .catch((err) => console.error(err));
 

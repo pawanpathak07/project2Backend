@@ -8,20 +8,13 @@ const PORT = 3000;
 import * as dotenv from "dotenv"
 dotenv.config()
 
-import "reflect-metadata";
+// import "reflect-metadata";
 
 import './database/connection'
+import userRoute from './routes/userRoute'
+app.use(express.json()) 
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello world");
-}); 
-
-app.get("/about", (req: Request, res: Response) => {
-  res.send("About Page");
-});
-app.get("/contact", (req: Request, res: Response) => {
-  res.send("Contact Page");
-});
+app.use("", userRoute)
 
 app.listen(PORT, () => {
   console.log("Server has started at port", PORT);
