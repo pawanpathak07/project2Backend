@@ -8,6 +8,8 @@ const PORT = 3000;
 import * as dotenv from "dotenv"
 dotenv.config()
 
+import "reflect-metadata";
+
 import './database/connection'
 
 app.get("/", (req: Request, res: Response) => {
