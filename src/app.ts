@@ -14,7 +14,11 @@ import './database/connection'
 import userRoute from './routes/userRoute'
 app.use(express.json()) 
 
+// localhost/3000/hello/register
+// localhost/3000/register
 app.use("", userRoute)
+
+
 
 app.listen(PORT, () => {
   console.log("Server has started at port", PORT);
