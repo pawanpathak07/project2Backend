@@ -61,7 +61,8 @@ public static async loginUser(req:Request,res:Response):Promise<void>{
     //     message:"User logged in successfully"
     // })
 
-   const token = jwt.sign({id:data.id},"hahaha",{
+    //generate token
+   const token = jwt.sign({id:data.id}, process.env.SECRET_KEY as string,{
         expiresIn:"1hr"
     })
     res.status(200).json({

@@ -2,8 +2,7 @@ import {
     Table,
     Column,
     Model,
-    DataType,
-    CreatedAt
+    DataType
 } from "sequelize-typescript";
 
 @Table({
@@ -21,18 +20,30 @@ class Product extends Model {
     declare id:string;
 
     @Column({
-        type: DataType.STRING
+        type: DataType.STRING,
+        allowNull : false  
     })
-    declare productname:string;
+    declare productName:string;
 
+    @Column({
+        type: DataType.TEXT
+    })
+    declare productDescription:string;
+
+    @Column({
+        type: DataType.INTEGER
+    })
+    declare productPrice:number
+
+    @Column({
+        type: DataType.INTEGER
+    })
+    declare productTotalStockQty:number
+    
     @Column({
         type: DataType.STRING
     })
-    declare email:string;
+    declare productImage:string
 
-    @Column({
-        type: DataType.STRING
-    })
-    declare password:string 
 }
-export default Product;
+export default Product
