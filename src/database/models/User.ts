@@ -23,7 +23,13 @@ class User extends Model {
     @Column({
         type: DataType.STRING
     })
-    declare username:string;
+    declare username:string; 
+
+    @Column({
+        type: DataType.ENUM("customer","admin"),
+        defaultValue:"customer"
+    })
+    declare role :string;
 
     @Column({
         type: DataType.STRING
