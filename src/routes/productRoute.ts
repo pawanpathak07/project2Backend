@@ -1,8 +1,17 @@
-import express ,{ Router } from "express";
-import ProductControllers from "../controllers/productController";
-const router:Router = express.Router();
+import express,{ Router } from "express";
+import authMiddlerware, { Role } from "../middleware/authMiddlerware";
+import productController from "../controllers/productController";
+import {multer, storage} from "../middleware/multerMiddleware"
 
-router.route("/addproduct")
-.post(ProductControllers.addProduct)
 
-export default router;
+const upload = multer({storage : storage})
+const router:Router = express.Router()
+
+router.route("/")
+.post(
+authMiddlerware.isAuthenticated, 
+authMiddlerware.restrictTo(Role.Admin), 
+upload.single("image"), 
+productController.addProduct)
+
+export default router

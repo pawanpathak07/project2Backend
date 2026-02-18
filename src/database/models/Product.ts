@@ -43,7 +43,6 @@ class Product extends Model {
     @Column({
         type: DataType.STRING
     })
-    declare productImage:string
-
+    declare productImageUrl :string
 }
 export default Product

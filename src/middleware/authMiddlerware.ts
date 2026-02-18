@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import User from '../database/models/User'
-import { ENUM } from 'sequelize'
 
-interface AuthRequest extends Request {
+export interface AuthRequest extends Request {
     user?: {
         username: string,
         email: string,
@@ -13,13 +12,13 @@ interface AuthRequest extends Request {
     }
 }
 
-enum Role{
+export enum Role{
     Admin ="admin",
     Customer ="customer"
 }
 
 class AuthMiddleware {
-    isAuthenticated(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+   async isAuthenticated(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
         //get token from user
         const token = req.headers.authorization
         if (!token || token === undefined) {
@@ -58,9 +57,10 @@ class AuthMiddleware {
                 restrictTo(...roles:Role[]){
                     return(req:AuthRequest, res:Response, next:NextFunction)=>{
                         let userRole = req.user?.role as Role
+                       console.log(userRole)
                         if(!roles.includes(userRole)){
                             res.status(403).json({
-                                message:"You are not permission"
+                                message:"You didn't have permission"
 
                             })
                             
