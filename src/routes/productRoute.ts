@@ -13,5 +13,6 @@ authMiddlerware.isAuthenticated,
 authMiddlerware.restrictTo(Role.Admin), 
 upload.single("image"), 
 productController.addProduct)
+.get(productController.getAllProducts)
 
 export default router

@@ -18,8 +18,8 @@ const sequelize = new Sequelize({
   host: required("DB_HOST"),
   dialect: "mysql",
   port: Number(process.env.DB_PORT),
-  // models: [__dirname + "/models"],
-   models: [User, Product, Category],
+  models: [__dirname + "/models"],
+  //  models: [User, Product, Category],
 
 });
 
@@ -33,7 +33,7 @@ sequelize.sync({ force : false }).then(() =>
 
  //Relationships
 
- User.hasMany(Product, { foreignKey: "userId" })
+User.hasMany(Product, { foreignKey: "userId" })
 Product.belongsTo(User, { foreignKey: "userId" })
 
 Category.hasOne(Product, { foreignKey: "categoryId" })
