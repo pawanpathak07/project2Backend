@@ -53,5 +53,47 @@ async getAllProducts(req:Request, res:Response):Promise<void>{
         data
     })
 }
+async getSingleProduct(req:Request, res:Response):Promise<void>{
+    const id = req.params.id
+    const data = await Product.findAll({
+        where :{
+            id : id
+        }
+    })
+    if(data.length === 0){
+        res.status(404).json({
+            message : "No Product with that id"
+        })
+        
+    }else{
+        res.status(200).json({
+            message : "Product fetched successfully",
+            data
+        })
+    }
 }   
+async deleteProduct(req:AuthRequest, res:Response):Promise<void>{
+    const {id} = req.params
+    const data = await Product.findAll({
+        where :{
+            id : id
+        }
+    })
+    if(data.length > 0){
+        await Product.destroy({
+             where : {
+                id : id
+             }
+         })
+         res.status(200).json({
+            message : "Product deleted successfully"
+         })  
+    }else{
+        res.status(404).json({
+            message : "No Product with that id"
+        })
+    }
+
+}
+}
 export default new ProductController()
