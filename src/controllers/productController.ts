@@ -58,7 +58,17 @@ async getSingleProduct(req:Request, res:Response):Promise<void>{
     const data = await Product.findAll({
         where :{
             id : id
-        }
+        },
+        include:[
+            {
+                model : User,
+                attributes : ['id', 'email', 'username']
+            },
+            {
+                model : Category,
+                attributes : ['id', 'categoryName']
+            }
+        ]
     })
     if(data.length === 0){
         res.status(404).json({
