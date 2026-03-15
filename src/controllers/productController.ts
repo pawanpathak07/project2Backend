@@ -82,6 +82,39 @@ async getSingleProduct(req:Request, res:Response):Promise<void>{
         })
     }
 }   
+
+//UPDATE PRODUCT
+async updateProduct(req:AuthRequest, res:Response):Promise<void>{
+    const {id} = req.params
+    const {productName,productDescription,productTotalStockQty, productPrice, categoryId} = req.body
+    let fileName
+    if(req.file){
+        fileName = req.file?.filename
+    }   else{
+        fileName = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTW1yhlTpkCnujnhzP-xioiy9RdDQkKLMnMSg&s"
+    }   
+     if (!productName || !productDescription || !productTotalStockQty || !productPrice || !categoryId) {
+            res.status(400).json({ message: "Please provide all required fields: productName, productDescription, productTotalStockQty, productPrice, categoryId" });
+            return;
+        } 
+    await Product.update({
+        productName,
+        productDescription, 
+        productTotalStockQty,
+        productPrice,
+        productImageUrl : fileName,
+        categoryId : categoryId
+    },{ 
+        where : {
+            id : id
+        }
+    })
+    res.status(200).json({
+        message : "Product updated successfully"
+    })
+}
+
+//DELETE PRODUCT
 async deleteProduct(req:AuthRequest, res:Response):Promise<void>{
     const {id} = req.params
     const data = await Product.findAll({

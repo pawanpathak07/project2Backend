@@ -63,7 +63,7 @@ public static async loginUser(req:Request,res:Response):Promise<void>{
 
     //generate token
    const token = jwt.sign({id:data.id}, process.env.SECRET_KEY as string,{
-        expiresIn:"1hr"
+        expiresIn:"20d"
     })
     res.status(200).json({
         message:"User logged in successfully",

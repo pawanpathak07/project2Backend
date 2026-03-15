@@ -7,13 +7,16 @@ import {multer, storage} from "../middleware/multerMiddleware"
 const upload = multer({storage : storage})
 const router:Router = express.Router()
 
-router.route("/")
-.post(
+router.route("/").post(
 authMiddlerware.isAuthenticated, 
 authMiddlerware.restrictTo(Role.Admin), 
 upload.single("image"), 
 productController.addProduct)
 .get(productController.getAllProducts)
+
+router.route("/:id")
+.patch(authMiddlerware.isAuthenticated, authMiddlerware.restrictTo(Role.Admin), upload.single("image"),
+productController.updateProduct)
 
 router.route("/:id").get(productController.getSingleProduct)
 .delete(authMiddlerware.isAuthenticated, authMiddlerware.restrictTo(Role.Admin), 

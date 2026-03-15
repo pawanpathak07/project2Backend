@@ -2,6 +2,7 @@ import { ForeignKey, Sequelize } from "sequelize-typescript";
 import User from "./models/User";
 import Product from "./models/Product";
 import Category from "./models/Category";
+import Cart from "./models/Cart";
 
 function required(name: string): string {
   const value = process.env[name];
@@ -39,6 +40,12 @@ Product.belongsTo(User, { foreignKey: "userId" })
 Category.hasOne(Product, { foreignKey: "categoryId" })
 Product.belongsTo(Category, { foreignKey: "categoryId" })
 
+// product-cart relation
+User.hasMany(Cart,{foreignKey : "userId"})
+Cart.belongsTo(User,{foreignKey : "userId"})
 
+// user-cart relation
+Product.hasMany(Cart, {foreignKey: "productId" })
+Cart.belongsTo(Product, {foreignKey: "productId" })
 
 export default sequelize;

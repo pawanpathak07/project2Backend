@@ -42,7 +42,7 @@ class categoryController {
 
     //GET CATEGORIES
     async getCategories(Req: Request, res: Response): Promise<void> {
-        const data = Category.findAll()
+        const data = await Category.findAll()
         res.status(200).json({
             message: "Categories fetched successfully",
             data
@@ -82,8 +82,10 @@ class categoryController {
                 id 
             }
         })
+        res.status(200).json({
+            message : "Category updated successfully"
+        })
     }
-
 }
 
 export default new categoryController()
