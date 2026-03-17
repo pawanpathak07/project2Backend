@@ -45,6 +45,7 @@ class CartController {
             include: [
                 {
                     model: Product,
+                    attributes: ['productName', 'productImageUrl', 'productPrice'],
                     include: [
                         {
                             model: Category,
@@ -52,7 +53,8 @@ class CartController {
                         }
                     ]
                 }
-            ]
+            ],
+         attributes : ['productId', 'quantity']
         })
         if (cartItems.length === 0) {
             res.status(404).json({
