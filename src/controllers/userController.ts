@@ -10,10 +10,24 @@ class AuthController{
         const {username,email,password,role} = req.body
         if(!username || !email || !password){
         // Logic to register user
-        res.status(400).json({message:"User registered successfully"
+        res.status(400).json({message:"Please provide username, email and password"
         })
         return
     }
+
+    const existingUser = await User.findOne({
+        where : {
+            email : email
+        }
+    })
+    if(existingUser){
+        res.status(400).json({
+            message : "User with that email already exists"
+        })
+        return
+    }
+
+    //hash password and insert into database
    await User.create({
         username,
         email,
@@ -21,10 +35,12 @@ class AuthController{
         role : role
     })
     res.status(200).json({
-        message: "user registered successfully"
+        message: "User registered successfully"
     })
 
 }
+
+// Logic to login user
 public static async loginUser(req:Request,res:Response):Promise<void>{
     // user input email and password
     const {email,password} = req.body
@@ -34,7 +50,8 @@ public static async loginUser(req:Request,res:Response):Promise<void>{
         })
         return
     }
-    //check wheather user with above email exist ot not
+    
+    //check wheather user with above email exist or not
 
     const [data] = await User.findAll({
         where : {
@@ -61,12 +78,19 @@ public static async loginUser(req:Request,res:Response):Promise<void>{
     //     message:"User logged in successfully"
     // })
 
-    //generate token
-   const token = jwt.sign({id:data.id}, process.env.SECRET_KEY as string,{
+    //Generate token
+   const token = jwt.sign({id:data.id, role: data.role}, process.env.SECRET_KEY as string,{
         expiresIn:"20d"
     })
+
+    //Role-based message
+    const message = data.role === "admin" 
+    ? "Admin Logged in successfully" 
+    : "User Logged in successfully"
+
+
     res.status(200).json({
-        message:"User logged in successfully",
+        message: message,
         data : token
     })
 }
