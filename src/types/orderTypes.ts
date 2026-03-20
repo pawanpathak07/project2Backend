@@ -1,4 +1,3 @@
-import OrderDetail from "../database/models/OrderDetail"
 
 
 export interface OrderData{
@@ -10,7 +9,7 @@ export interface OrderData{
         paymentStatus? : PaymentStatus,
         pidx?:string
     },
-    items : OrderDetail[]
+    items : OrderDetails[]
 }
 
 export interface OrderDetails{
@@ -24,4 +23,12 @@ export enum PaymentMethod{
 enum PaymentStatus{
     Paid = "Paid",
     Unpaid = "Unpaid"
+}
+
+export interface KhaltiResponse{
+    pidx : string,
+    payment_url : string,
+    expires_at : Date | string,
+    expires_in : number,
+    user_fee : number
 }

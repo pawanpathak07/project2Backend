@@ -21,7 +21,13 @@ class Order extends Model {
 
     @Column({
         type: DataType.STRING,
-        allowNull : false  
+        allowNull : false,
+        validate :{
+            len : {
+                args : [10,10],
+                msg : " Phone Number must be 10 digits"
+            }
+        }
     })
     declare phoneNumber:string; 
 
@@ -29,7 +35,7 @@ class Order extends Model {
         type: DataType.STRING,
         allowNull : false  
     })
-    declare skippingAddress:string; 
+    declare shippingAddress:string; 
      
     @Column({
         type: DataType.FLOAT,
