@@ -47,7 +47,7 @@ class Order extends Model {
         type: DataType.ENUM('pending', 'delivered', 'cancelled', 'ontheway', 'preparation'),
         defaultValue : 'pending' 
     })
-    declare orderStatus:number; 
+    declare orderStatus:string; 
 }
 
 export default Order
