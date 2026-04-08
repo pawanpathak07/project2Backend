@@ -1,5 +1,5 @@
-import { Response } from 'express';
-import { OrderData, PaymentMethod, KhaltiResponse, TransactionVerificationResponse, TransactionStatus, Orderstatus } from './../types/orderTypes';
+import { Response, Request } from 'express';
+import { OrderData, PaymentMethod, KhaltiResponse, TransactionVerificationResponse, TransactionStatus, Orderstatus, PaymentStatus } from './../types/orderTypes';
 import { AuthRequest } from "../middleware/authMiddlerware";
 import Order from '../database/models/Order';
 import Payment from '../database/models/Payment';
@@ -7,6 +7,9 @@ import OrderDetail from "../database/models/OrderDetail";
 import axios from 'axios';
 import Product from '../database/models/Product';
 
+class ExtenedOrder extends Order {
+    declare paymentId: string | null;
+}
 
 class OrderController {
     async createOrder(req: AuthRequest, res: Response): Promise<void> {
@@ -149,28 +152,94 @@ class OrderController {
     async cancelMyOrder(req: AuthRequest, res: Response): Promise<void> {
         const userId = req.user?.id
         const orderId = req.params.id
-        const order:any = await Order.findAll({
+        const order: any = await Order.findAll({
             where: {
                 userId,
                 id: orderId
             },
             include: []
+        })
+        if (order?.OrderStatus === Orderstatus.Ontheway || order?.OrderStatus === Orderstatus.Preparation) {
+            res.status(400).json({
+                message: "Order cannot be cancelled at this stage"
             })
-            if(order?.OrderStatus === Orderstatus.Ontheway || order?.OrderStatus === Orderstatus.Preparation){
-                res.status(400).json({
-                    message: "Order cannot be cancelled at this stage"
-                })
-                return
+            return
+        }
+        await Order.update({ orderStatus: Orderstatus.Cancelled }, {
+            where: {
+                id: orderId
             }
-            await Order.update({ orderStatus: Orderstatus.Cancelled }, {
+        })
+        res.status(200).json({
+            message: "Order cancelled successfully"
+        })
+    }
+    //CUSTOMER SIDE END HERE
+
+    //ADMIN SIDE START HERE
+    async changeOrderStatus(req: Request, res: Response): Promise<void> {
+        const orderId = req.params.id  //kasko change garni?
+        const Orderstatus: Orderstatus = req.body.orderstatus  // k ma change garni?
+        await Order.update({
+            orderStatus: Orderstatus
+        }, {
+            where: {
+                id: orderId
+            }
+        })
+        res.status(200).json({
+            message: "Order status updated successfully"
+        })
+    }
+
+    async changePaymentStatus(req: Request, res: Response): Promise<void> {
+        const orderId:any = req.params.id
+        const paymentStatus: PaymentStatus = req.body.paymentStatus
+        const order = await Order.findByPk(orderId)
+
+        const extendedOrder: ExtenedOrder = order as ExtenedOrder
+        await Payment.update(
+            {
+                paymentStatus: paymentStatus
+            }, {
+            where: {
+                id: extendedOrder.paymentId
+            }
+        })
+        res.status(200).json({
+            message: `Payment status of orderId ${orderId} updated to ${paymentStatus} successfully`
+        })
+    }
+
+    async deleteOrder(req: Request, res: Response): Promise<void> {
+        const orderId:any = req.params.id
+        const order = await Order.findByPk(orderId)
+        const extendedOrder: ExtenedOrder = order as ExtenedOrder
+        if (order) {          
+            await OrderDetail.destroy({
+                where: {
+                    orderId: orderId
+                }
+            })
+            await Payment.destroy({
+                where: {
+                    id: extendedOrder.paymentId
+                }
+            })
+              await Order.destroy({
                 where: {
                     id: orderId
                 }
             })
             res.status(200).json({
-                message: "Order cancelled successfully"
+                message: "Order deleted successfully"
             })
+        }else{
+            res.status(404).json({
+                message: "No Order with that orderId"
+            })
+        }
+
     }
-    //CUSTOMER SIDE END HERE
 }
 export default new OrderController

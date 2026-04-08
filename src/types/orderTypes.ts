@@ -20,7 +20,7 @@ export enum PaymentMethod{
     Cod = "Cash on Delivery",
     Khalti = "Khalti",
 }
-enum PaymentStatus{
+export enum PaymentStatus{
     Paid = "paid",
     Unpaid = "unpaid"
 }
